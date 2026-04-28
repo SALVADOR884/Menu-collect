@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Tableau de bord analytique</h1>
+
+<!-- Graphique 1 : Prix moyen par ville -->
+<div class="row mt-4">
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">📍 Prix moyen des menus par ville (FCFA)</div>
+            <div class="card-body">
+                <canvas id="villeChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphique 2 : Plats les plus populaires -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">⭐ Menus les mieux pris (les plus cités)</div>
+            <div class="card-body">
+                <canvas id="platChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Tableau Restaurants les moins chers (top 10) -->
+    <div class="col-md-6">
+        <h3>🏆 Top 10 des restaurants les moins chers</h3>
+        <table class="table table-sm table-bordered">
+            <thead class="table-success">
+                <tr><th>Restaurant</th><th>Ville</th><th>Prix moyen (FCFA)</th><th>Nb menus</th></tr>
+            </thead>
+            <tbody>
+                {% for r in restos_moins_chers %}
+                <tr>
+                    <td>{{ r.nom }}</td>
+                    <td>{{ r.ville }}</td>
+                    <td>{{ r.prix_moyen }}</td>
+                    <td>{{ r.nb_menus }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Tableau détaillé par ville -->
+    <div class="col-md-6">
+        <h3>🌍 Prix moyen par ville</h3>
+        <table class="table table-sm table-bordered">
+            <thead class="table-info">
+                <tr><th>Ville</th><th>Prix moyen (FCFA)</th><th>Nb restaurants</th><th>Nb menus</th></tr>
+            </thead>
+            <tbody>
+                {% for v in prix_par_ville %}
+                <tr>
+                    <td>{{ v.ville }}</td>
+                    <td>{{ v.prix_moyen }}</td>
+                    <td>{{ v.nb_restos }}</td>
+                    <td>{{ v.nb_menus }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <!-- Top 10 plats -->
+    <div class="col-md-6">
+        <h3>🍽️ Top 10 des plats les plus enregistrés</h3>
+        <table class="table table-sm table-bordered">
+            <thead class="table-warning">
+                <tr><th>Plat</th><th>Occurrences</th><th>Prix moyen (FCFA)</th></tr>
+            </thead>
+            <tbody>
+                {% for p in plats_top %}
+                <tr>
+                    <td>{{ p.nom_plat }}</td>
+                    <td>{{ p.nb_occurrences }}</td>
+                    <td>{{ p.prix_moyen }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Répartition par catégorie -->
+    <div class="col-md-6">
+        <h3>🥗 Répartition des catégories de plats</h3>
+        <canvas id="catChart" width="200" height="100"></canvas>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Graphique prix par ville (barres verticales)
+    new Chart(document.getElementById('villeChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ labels_villes | tojson }},
+            datasets: [{
+                label: 'Prix moyen (FCFA)',
+                data: {{ data_villes | tojson }},
+                backgroundColor: 'rgba(54, 162, 235, 0.7)'
+            }]
+        },
+        options: { responsive: true }
+    });
+
+    // Graphique plats populaires (barres horizontales)
+    new Chart(document.getElementById('platChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ labels_plats | tojson }},
+            datasets: [{
+                label: 'Nombre de saisies',
+                data: {{ data_plats | tojson }},
+                backgroundColor: 'rgba(255, 193, 7, 0.7)'
+            }]
+        },
+        options: { indexAxis: 'y', responsive: true }
+    });
+
+    // Diagramme circulaire des catégories
+    new Chart(document.getElementById('catChart'), {
+        type: 'doughnut',
+        data: {
+            labels: {{ labels_cat | tojson }},
+            datasets: [{
+                data: {{ data_cat | tojson }},
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+            }]
+        }
+    });
+</script>
+{% endblock %}

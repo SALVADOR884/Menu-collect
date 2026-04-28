@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center">
+    <h1 class="mb-3">Bienvenue sur MenuCollect</h1>
+    <p class="lead">Aidez la communauté à trouver les restaurants les moins chers et les plats les plus prisés.</p>
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ nb_restos }}</h5>
+                    <p class="card-text">Restaurants référencés</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">{{ nb_menus }}</h5>
+                    <p class="card-text">Menus collectés</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <a href="/ajouter" class="btn btn-outline-success btn-lg w-100 py-4">➕ Ajouter un menu</a>
+        </div>
+    </div>
+    <h3 class="mt-5">Derniers ajouts</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr><th>Plats</th><th>Prix (FCFA)</th><th>Restaurants</th><th>Villes</th><th>Date</th></tr>
+        </thead>
+        <tbody>
+            {% for m in derniers %}
+            <tr>
+                <td>{{ m.nom_plat }}</td>
+                <td>{{ m.prix }}</td>
+                <td>{{ m.resto_nom }}</td>
+                <td>{{ m.ville }}</td>
+                <td>{{ m.date_ajout }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

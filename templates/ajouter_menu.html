@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Ajouter un menu</h1>
+<form method="post">
+    <div class="mb-3">
+        <label class="form-label">Nom du plat *</label>
+        <input type="text" class="form-control" name="nom_plat" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Description (optionnelle)</label>
+        <textarea class="form-control" name="description" rows="2"></textarea>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Prix (FCFA) *</label>
+            <input type="number" step="1" min="0" class="form-control" name="prix" required placeholder="ex: 2500">
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Catégorie</label>
+            <select class="form-select" name="categorie">
+                <option value="">-- Choisir --</option>
+                <option>Entrée</option>
+                <option>Plat</option>
+                <option>Dessert</option>
+                <option>Boisson</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Restaurant *</label>
+            <input type="text" class="form-control" name="nom_resto" list="resto-list" required>
+            <datalist id="resto-list">
+                {% for r in restaurants %}
+                <option value="{{ r.nom }} ({{ r.ville }})">
+                {% endfor %}
+            </datalist>
+            <div class="form-text">Nom du restaurant. S'il n'existe pas, il sera créé avec la ville choisie.</div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label class="form-label">Ville *</label>
+            <select class="form-select" name="ville" required>
+                <option value="">-- Sélectionner une ville --</option>
+                {% for v in villes %}
+                <option value="{{ v }}">{{ v }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-success">Enregistrer</button>
+    <a href="/" class="btn btn-secondary">Annuler</a>
+</form>
+{% endblock %}
