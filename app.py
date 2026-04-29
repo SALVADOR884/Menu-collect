@@ -26,6 +26,20 @@ def index():
     db.close()
     return render_template("index.html", nb_restos=nb_restos, nb_menus=nb_menus, derniers=derniers)
 
+
+@app.route("/menus")
+def liste_menus():
+    db = get_db()
+    menus = db.execute("""
+        SELECT m.id, m.nom_plat, m.prix, m.categorie, m.date_ajout,
+               r.nom as resto_nom, r.ville
+        FROM menu m
+        JOIN restaurant r ON m.restaurant_id = r.id
+        ORDER BY m.date_ajout DESC
+    """).fetchall()
+    db.close()
+    return render_template("menus.html", menus=menus)
+
 @app.route("/ajouter", methods=["GET", "POST"])
 def ajouter_menu():
     db = get_db()
@@ -117,4 +131,4 @@ def dashboard():
                            data_cat=data_cat)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)

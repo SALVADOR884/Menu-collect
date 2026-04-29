@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>📋 Gestion des menus collectés</h1>
+
+{% if menus %}
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Plat</th>
+                <th>Prix (FCFA)</th>
+                <th>Catégorie</th>
+                <th>Restaurant</th>
+                <th>Ville</th>
+                <th>Date d'ajout</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for menu in menus %}
+            <tr>
+                <td>{{ menu.nom_plat }}</td>
+                <td>{{ menu.prix }}</td>
+                <td>{{ menu.categorie or '—' }}</td>
+                <td>{{ menu.resto_nom }}</td>
+                <td>{{ menu.ville }}</td>
+                <td>{{ menu.date_ajout }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('supprimer_menu', menu_id=menu.id) }}"
+                          onsubmit="return confirm('Supprimer définitivement « {{ menu.nom_plat }} » ?');">
+                        <button type="submit" class="btn btn-danger btn-sm">🗑️ Supprimer</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <div class="alert alert-info">
+        Aucun menu collecté pour le moment. <a href="/ajouter">Ajoutez le premier !</a>
+    </div>
+{% endif %}
+
+{% endblock %}
