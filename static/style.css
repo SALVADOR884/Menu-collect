@@ -30,3 +30,18 @@ h1, h3 {
 .table {
     background-color: rgba(255, 255, 255, 0.9);
 }
+/* ----- Page Menus ----- */
+.table-responsive {
+    margin-bottom: 0;
+}
+.table th {
+    white-space: nowrap;
+}
+.table td {
+    vertical-align: middle;
+}
+.alert.alert-info {
+    background-color: #e8f5e9;
+    border-color: #c8e6c9;
+    color: #2e7d32;
+}

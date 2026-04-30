@@ -27,18 +27,6 @@ def index():
     return render_template("index.html", nb_restos=nb_restos, nb_menus=nb_menus, derniers=derniers)
 
 
-@app.route("/menus")
-def liste_menus():
-    db = get_db()
-    menus = db.execute("""
-        SELECT m.id, m.nom_plat, m.prix, m.categorie, m.date_ajout,
-               r.nom as resto_nom, r.ville
-        FROM menu m
-        JOIN restaurant r ON m.restaurant_id = r.id
-        ORDER BY m.date_ajout DESC
-    """).fetchall()
-    db.close()
-    return render_template("menus.html", menus=menus)
 
 @app.route("/ajouter", methods=["GET", "POST"])
 def ajouter_menu():
@@ -129,6 +117,25 @@ def dashboard():
                            data_plats=data_plats,
                            labels_cat=labels_cat,
                            data_cat=data_cat)
+@app.route("/menus")
+def liste_menus():
+    db = get_db()
+    menus = db.execute("""
+        SELECT m.id, m.nom_plat, m.prix, m.categorie, m.date_ajout,
+               r.nom as resto_nom, r.ville
+        FROM menu m
+        JOIN restaurant r ON m.restaurant_id = r.id
+        ORDER BY m.date_ajout DESC
+    """).fetchall()
+    db.close()
+    return render_template("menus.html", menus=menus)
+@app.route('/supprimer/<int:menu_id>', methods=['POST'])
+def supprimer_menu(menu_id):
+    db = get_db()
+    db.execute("DELETE FROM menu WHERE id = ?", (menu_id,))
+    db.commit()
+    db.close()
+    return redirect(url_for('liste_menus'))   # Redirige vers /menus après suppression
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=False)
